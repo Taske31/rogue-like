@@ -14,7 +14,7 @@ if __name__ == '__main__':
     font = pygame.font.Font(None, 75)
     hero_group = hero.hero_group
     clock = pygame.time.Clock()
-    all_sprites = pygame.sprite.Group()
+    FPS = 60
 
     def terminate():
         pygame.quit()
@@ -36,7 +36,7 @@ if __name__ == '__main__':
         else:
             image = image.convert_alpha()
         return image
-    hero = hero.hero
+    hero = hero.Hero(4, 1)
     run = True
     while run:
         for event in pygame.event.get():
@@ -46,13 +46,13 @@ if __name__ == '__main__':
                 settings.open_settings()
         game_map = map.game_map
         keys = pygame.key.get_pressed()
-        #hero.move(keys)
         map.tiles_group.draw(window)
-        all_sprites.draw(window)
-        #hero_group.draw(window)
+        hero.move(keys)
         hero.update()
+        hero_group.draw(window)
+
         pygame.display.flip()
-        clock.tick(75)
+        clock.tick(FPS)
         window.fill((255, 255, 255))
 
     pygame.quit()
