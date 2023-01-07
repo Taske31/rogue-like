@@ -14,7 +14,7 @@ if __name__ == '__main__':
     font = pygame.font.Font(None, 75)
     hero_group = hero.hero_group
     clock = pygame.time.Clock()
-    FPS = 60
+    FPS = 30
 
     def terminate():
         pygame.quit()
@@ -44,11 +44,14 @@ if __name__ == '__main__':
                 terminate()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 settings.open_settings()
+
         game_map = map.game_map
         keys = pygame.key.get_pressed()
+        mouse = pygame.mouse.get_pressed()
         map.tiles_group.draw(window)
         hero.move(keys)
-        hero.update()
+        hero.animation(keys, mouse)
+
         hero_group.draw(window)
 
         pygame.display.flip()

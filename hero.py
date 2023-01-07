@@ -45,7 +45,10 @@ class Hero(pygame.sprite.Sprite):
         self.frames_run = []
         self.sheet_run = load_image('Run-Sheet.png')
         self.cut_sheet(self.sheet_run, 8, 1, self.frames_run)
-        self.image = self.frames_run[self.cur_frame]
+
+        self.frames_attack = []
+        self.sheet_attack = load_image('Attack.png')
+        self.cut_sheet(self.sheet_attack, 8, 1, self.frames_attack)
         self.rect = self.image.get_rect()
         self.rect.x = 120
         self.rect.y = 385
@@ -61,9 +64,17 @@ class Hero(pygame.sprite.Sprite):
                 frame.append(sheet.subsurface(pygame.Rect(
                     frame_location, self.rect.size)))
 
-    def update(self):
-        self.cur_frame = (self.cur_frame + 1) % len(self.frames_stay)
-        self.image = self.frames_stay[self.cur_frame]
+    def animation(self, keys, button):
+
+        if keys[pygame.K_d] or keys[pygame.K_a] or keys[pygame.K_w] or keys[pygame.K_s]:
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames_run)
+            self.image = self.frames_run[self.cur_frame]
+        elif button[0]:
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames_attack)
+            self.image = self.frames_attack[self.cur_frame]
+        else:
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames_stay)
+            self.image = self.frames_stay[self.cur_frame]
         if not self.right:
             self.image = pygame.transform.flip(self.image, True, False)
 
@@ -71,9 +82,6 @@ class Hero(pygame.sprite.Sprite):
         self.speed = 10
         if pygame.key.get_mods() & pygame.KMOD_SHIFT:
             self.speed += 5
-        if keys[pygame.K_d] or keys[pygame.K_a] or keys[pygame.K_w] or keys[pygame.K_s]:
-            self.cur_frame = (self.cur_frame + 1) % len(self.frames_run)
-            self.image = self.frames_run[self.cur_frame]
         if keys[pygame.K_d]:
             if self.rect.x < width - 180:
                 if not self.right:
@@ -92,5 +100,10 @@ class Hero(pygame.sprite.Sprite):
         if keys[pygame.K_s]:
             if self.rect.y < height - 230:
                 self.rect.y += self.speed
+
+    #def attack(self, button):
+    #    if button[0]:
+
+
 
 
