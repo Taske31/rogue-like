@@ -5,6 +5,7 @@ import settings
 import hero
 import time
 import map
+import mobs
 
 if __name__ == '__main__':
     pygame.init()
@@ -13,6 +14,7 @@ if __name__ == '__main__':
     window.fill((255, 255, 255))
     font = pygame.font.Font(None, 75)
     hero_group = hero.hero_group
+    mobs_group = mobs.mobs_group
     clock = pygame.time.Clock()
     FPS = 30
 
@@ -37,6 +39,7 @@ if __name__ == '__main__':
             image = image.convert_alpha()
         return image
     hero = hero.Hero(4, 1)
+    boar = mobs.Mob('boar', 20, 30, (500, 200))
     run = True
     while run:
         for event in pygame.event.get():
@@ -44,15 +47,22 @@ if __name__ == '__main__':
                 terminate()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 settings.open_settings()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                boar.get_damage(hero.damage)
 
         game_map = map.game_map
+
+        map.tiles_group.draw(window)
+
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
-        map.tiles_group.draw(window)
         hero.move(keys)
         hero.animation(keys, mouse)
 
+        boar.animation(hero.rect)
+
         hero_group.draw(window)
+        mobs_group.draw(window)
 
         pygame.display.flip()
         clock.tick(FPS)

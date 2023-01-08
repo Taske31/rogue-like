@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import main
 
 pygame.init()
 window = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
@@ -54,6 +55,7 @@ class Hero(pygame.sprite.Sprite):
         self.rect.y = 385
         self.right = True
         self.speed = 10
+        self.damage = 10
 
     def cut_sheet(self, sheet, columns, rows, frame):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -101,8 +103,8 @@ class Hero(pygame.sprite.Sprite):
             if self.rect.y < height - 230:
                 self.rect.y += self.speed
 
-    #def attack(self, button):
-    #    if button[0]:
+
+
 
 
 
