@@ -3,9 +3,9 @@ import sys
 import os
 import settings
 import hero
-import time
 import map
 import mobs
+
 
 if __name__ == '__main__':
     pygame.init()
@@ -40,6 +40,7 @@ if __name__ == '__main__':
         return image
     hero = hero.Hero(4, 1)
     boar = mobs.Mob('boar', 20, 30, (500, 200))
+    boar2 = mobs.Mob('boar', 20, 30, (700, 800))
     run = True
     while run:
         for event in pygame.event.get():
@@ -49,6 +50,7 @@ if __name__ == '__main__':
                 settings.open_settings()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 boar.get_damage(hero.damage)
+                boar2.get_damage(hero.damage)
 
         game_map = map.game_map
 
@@ -60,6 +62,7 @@ if __name__ == '__main__':
         hero.animation(keys, mouse)
 
         boar.animation(hero.rect)
+        boar2.animation(hero.rect)
 
         hero_group.draw(window)
         mobs_group.draw(window)

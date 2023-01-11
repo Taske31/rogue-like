@@ -56,6 +56,7 @@ class Hero(pygame.sprite.Sprite):
         self.right = True
         self.speed = 10
         self.damage = 10
+        self.health = 100
 
     def cut_sheet(self, sheet, columns, rows, frame):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -102,6 +103,12 @@ class Hero(pygame.sprite.Sprite):
         if keys[pygame.K_s]:
             if self.rect.y < height - 230:
                 self.rect.y += self.speed
+
+    def get_damage(self, damage):
+        self.health -= damage
+
+    def death(self):
+        pass
 
 
 

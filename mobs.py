@@ -4,12 +4,14 @@ import os
 import hero
 import main
 
+
 pygame.init()
 window = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
 size = width, height = window.get_size()
 clock = pygame.time.Clock()
 all_sprites = pygame.sprite.Group()
 mobs_group = pygame.sprite.Group()
+
 count_of_mobs = 2
 
 
@@ -34,8 +36,8 @@ class Mob(pygame.sprite.Sprite):
     def __init__(self, name, damage, health, pos):
         super().__init__(mobs_group)
         self.name = name
-        self.health = damage
-        self.damage = health
+        self.health = health
+        self.damage = damage
         self.condition = 'calm'
 
         self.cur_frame = 0
@@ -47,6 +49,10 @@ class Mob(pygame.sprite.Sprite):
         self.sheet_run = load_image(f'{name}-run.png')
         self.cut_sheet(self.sheet_run, 6, 1, self.frames_run)
 
+        self.frames_die = []
+        self.sheet_die = load_image(f'{name}-die.png')
+        self.cut_sheet(self.sheet_die, 4, 1, self.frames_die)
+
         #self.frames_attack = []
         #self.sheet_attack = load_image(f'{name}-attack.png')
         #self.cut_sheet(self.sheet_attack, 6, 1, self.frames_attack)
@@ -55,6 +61,8 @@ class Mob(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+        self.speed = 5
+        self.count_to_death = 0
 
     def cut_sheet(self, sheet, columns, rows, frame):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -76,19 +84,36 @@ class Mob(pygame.sprite.Sprite):
         # if self.condition == 'attack':
         #     self.cur_frame = (self.cur_frame + 1) % len(self.frames_attack)
         #     self.image = self.frames_attack[self.cur_frame]
+        if self.condition == 'death':
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames_die)
+            self.image = self.frames_die[self.cur_frame]
+            self.count_to_death += 1
+            if self.count_to_death == 8:
+                self.kill()
 
     def get_damage(self, damage):
         if pygame.sprite.spritecollideany(self, hero.hero_group):
             self.health -= damage
-            self.image.fill((255, 255, 255))
             self.condition = 'angry'
         if self.health <= 0:
             self.death()
 
     def death(self):
-        pass
+        self.condition = 'death'
 
     def chase(self, hero_pos):
+        if not pygame.sprite.spritecollideany(self, hero.hero_group):
+            if self.rect.x < hero_pos[0]:
+                self.image = pygame.transform.flip(self.image, True, False)
+                self.rect.x += self.speed
+            if self.rect.x > hero_pos[0]:
+                self.rect.x -= self.speed
+            if self.rect.y < hero_pos[1]:
+                self.rect.y += self.speed
+            if self.rect.y > hero_pos[1]:
+                self.rect.y -= self.speed
+        else:
+            self.attack()
+
+    def attack(self):
         pass
-       # while not pygame.sprite.spritecollideany(self, main.hero_group):
-       #     if self.rect.x < main.hero.rect[0]
