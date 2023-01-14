@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import hero
 
 chest_group = pygame.sprite.Group()
 
@@ -25,18 +26,14 @@ def load_image(name, colorkey=None):
 class Chest(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__(chest_group)
-        self.cur_frame = 0
         name = 'chest'
-        self.frames_stay = []
+        self.frames = []
         self.sheet = load_image(f'{name}.png')
-        self.cut_sheet(self.sheet, 2, 1, self.frames_stay)
+        self.cut_sheet(self.sheet, 2, 1, self.frames)
+        self.image = self.frames[0]
+        self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
-        self.image = self.frames_stay[self.cur_frame]
-        self.rect = self.image.get_rect()
-
-    def spawn(self):
-        self.cut_sheet(self.sheet, 2, 1, self.frames_stay)
 
     def cut_sheet(self, sheet, columns, rows, frame):
         self.rect = pygame.Rect(500, 500, sheet.get_width() // columns,
@@ -47,4 +44,6 @@ class Chest(pygame.sprite.Sprite):
                 frame.append(sheet.subsurface(pygame.Rect(
                     frame_location, self.rect.size)))
 
-print(2)
+    def open(self):
+        if pygame.sprite.spritecollideany(self, hero.hero_group):
+            self.image = self.frames[1]
