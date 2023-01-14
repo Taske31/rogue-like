@@ -90,3 +90,4 @@ if __name__ == '__main__':
         window.fill((255, 255, 255))
 
     pygame.quit()
+print()
