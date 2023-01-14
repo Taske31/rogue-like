@@ -49,4 +49,4 @@ class Chest(pygame.sprite.Sprite):
             self.image = self.frames[1]
 
 def lexa_lox():
-    print('lexa lox')
+    print('lexa lox х2')
