@@ -48,5 +48,4 @@ class Chest(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, hero.hero_group):
             self.image = self.frames[1]
 
-def lexa_lox():
-    print('lexa lox х2')
+
