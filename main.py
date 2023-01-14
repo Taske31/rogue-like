@@ -51,6 +51,7 @@ if __name__ == '__main__':
     boar = mobs.Mob('boar', 20, 30, (500, 200))
     boar2 = mobs.Mob('boar', 20, 30, (700, 800))
     run = True
+    DEATHTIMER = pygame.USEREVENT
     BOARTIMER = pygame.USEREVENT + 1
     while run:
         for event in pygame.event.get():
@@ -67,6 +68,10 @@ if __name__ == '__main__':
             if event.type == BOARTIMER:
                 attack(hero_object, boar)
                 attack(hero_object, boar2)
+            if hero_health <= 0:
+                pygame.time.set_timer(DEATHTIMER, 1000)
+            if event.type == DEATHTIMER:
+                terminate()
 
         game_map = map.game_map
 
