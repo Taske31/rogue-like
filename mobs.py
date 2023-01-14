@@ -3,6 +3,7 @@ import sys
 import os
 import hero
 import main
+
 pygame.init()
 window = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
 size = width, height = window.get_size()
@@ -61,7 +62,6 @@ class Mob(pygame.sprite.Sprite):
         self.rect.y = pos[1]
         self.speed = 5
         self.count_to_death = 0
-        self.count_to_attack = 0
 
     def cut_sheet(self, sheet, columns, rows, frame):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -118,10 +118,5 @@ class Mob(pygame.sprite.Sprite):
 
     def attack(self):
         if pygame.sprite.spritecollideany(self, hero.hero_group):
-
-            print(self.damage)
             return self.damage
-        else:
-            self.count_to_attack = 0
-
         return 0

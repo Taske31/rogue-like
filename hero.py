@@ -78,9 +78,6 @@ class Hero(pygame.sprite.Sprite):
         if self.condition == 'death':
             self.cur_frame = (self.cur_frame + 1) % len(self.frames_death)
             self.image = self.frames_death[self.cur_frame]
-            self.count_to_death += 1
-            if self.count_to_death == 8:
-                terminate()
 
         else:
             if keys[pygame.K_d] or keys[pygame.K_a] or keys[pygame.K_w] or keys[pygame.K_s]:
@@ -119,15 +116,16 @@ class Hero(pygame.sprite.Sprite):
                 self.rect.y += self.speed
 
     def get_damage(self, damage):
+        #print(self.health)
         self.health -= damage
-        if self.damage <= 0:
-            self.death()
+        if self.health <= 0:
+            self.condition = 'death'
 
     def attack(self):
         return self.damage
 
     def death(self):
-        self.condition = 'death'
+        terminate()
 
 
 
