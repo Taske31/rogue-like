@@ -116,7 +116,6 @@ class Hero(pygame.sprite.Sprite):
                 self.rect.y += self.speed
 
     def get_damage(self, damage):
-        #print(self.health)
         self.health -= damage
         if self.health <= 0:
             self.condition = 'death'

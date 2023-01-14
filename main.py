@@ -59,20 +59,20 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 settings.open_settings()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                hero_health = hero_object.health
+
                 attack(boar, hero_object)
                 attack(boar2, hero_object)
-                if pygame.sprite.spritecollide(boar, hero_group, True):
-
+                if pygame.sprite.spritecollide(boar, hero_group, False):
                     pygame.time.set_timer(BOARTIMER, 2000)
             if event.type == BOARTIMER:
                 attack(hero_object, boar)
-                # attack(hero_object, boar2)
+                attack(hero_object, boar2)
 
         game_map = map.game_map
 
         map.tiles_group.draw(window)
 
+        hero_health = hero_object.health
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
         hero_object.move(keys)
