@@ -6,22 +6,20 @@ import hero
 import map
 import mobs
 
-
 if __name__ == '__main__':
     pygame.init()
     window = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
     size = width, height = window.get_size()
     window.fill((255, 255, 255))
-    font = pygame.font.Font(None, 75)
+    font = pygame.font.Font(None, 40)
     hero_group = hero.hero_group
     mobs_group = mobs.mobs_group
     clock = pygame.time.Clock()
-    FPS = 30
+    FPS = 24
 
     def terminate():
         pygame.quit()
         sys.exit()
-
 
     def load_image(name, colorkey=None):
         fullname = os.path.join('images', name)
@@ -38,10 +36,22 @@ if __name__ == '__main__':
         else:
             image = image.convert_alpha()
         return image
-    hero = hero.Hero(4, 1)
+
+    def health_bar(health):
+        text = font.render("HP", True, (255, 255, 255))
+        window.blit(text, (width - 400, 50))
+        pygame.draw.rect(window, (255, 0, 0), (width - 340, 50, health * 2, 30))
+
+    def attack(receiver, attacker):
+        receiver.get_damage(attacker.attack())
+
+
+    hero_object = hero.Hero(4, 1)
+    hero_health = 100
     boar = mobs.Mob('boar', 20, 30, (500, 200))
     boar2 = mobs.Mob('boar', 20, 30, (700, 800))
     run = True
+    BOARTIMER = pygame.USEREVENT + 1
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -49,8 +59,15 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 settings.open_settings()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                boar.get_damage(hero.damage)
-                boar2.get_damage(hero.damage)
+                hero_health = hero_object.health
+                attack(boar, hero_object)
+                attack(boar2, hero_object)
+                if pygame.sprite.spritecollide(boar, hero_group, True):
+
+                    pygame.time.set_timer(BOARTIMER, 2000)
+            if event.type == BOARTIMER:
+                attack(hero_object, boar)
+                # attack(hero_object, boar2)
 
         game_map = map.game_map
 
@@ -58,15 +75,16 @@ if __name__ == '__main__':
 
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
-        hero.move(keys)
-        hero.animation(keys, mouse)
+        hero_object.move(keys)
+        hero_object.animation(keys, mouse)
 
-        boar.animation(hero.rect)
-        boar2.animation(hero.rect)
+        boar.animation(hero_object.rect)
+        boar2.animation(hero_object.rect)
 
         hero_group.draw(window)
         mobs_group.draw(window)
 
+        health_bar(hero_health)
         pygame.display.flip()
         clock.tick(FPS)
         window.fill((255, 255, 255))
