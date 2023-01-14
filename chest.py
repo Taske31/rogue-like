@@ -47,6 +47,3 @@ class Chest(pygame.sprite.Sprite):
     def open(self):
         if pygame.sprite.spritecollideany(self, hero.hero_group):
             self.image = self.frames[1]
-
-def gvgv():
-    pass
