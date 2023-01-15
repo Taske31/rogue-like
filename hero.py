@@ -46,9 +46,17 @@ class Hero(pygame.sprite.Sprite):
         self.sheet_run = load_image('Run-Sheet.png')
         self.cut_sheet(self.sheet_run, 8, 1, self.frames_run)
 
+        self.frames_attack_red = []
+        self.sheet_attack = load_image(f'Attack_red.png', -1)
+        self.cut_sheet(self.sheet_attack, 8, 1, self.frames_attack_red)
+
         self.frames_attack = []
-        self.sheet_attack = load_image('Attack.png')
+        self.sheet_attack = load_image(f'Attack.png')
         self.cut_sheet(self.sheet_attack, 8, 1, self.frames_attack)
+
+        self.frames_attack_black = []
+        self.sheet_attack = load_image(f'Attack_black.png', -1)
+        self.cut_sheet(self.sheet_attack, 8, 1, self.frames_attack_black)
 
         self.frames_death = []
         self.sheet_death = load_image('Death.png')

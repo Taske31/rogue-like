@@ -11,8 +11,6 @@ clock = pygame.time.Clock()
 all_sprites = pygame.sprite.Group()
 mobs_group = pygame.sprite.Group()
 
-count_of_mobs = 2
-
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('images', name)
@@ -51,10 +49,6 @@ class Mob(pygame.sprite.Sprite):
         self.frames_die = []
         self.sheet_die = load_image(f'{name}-die.png')
         self.cut_sheet(self.sheet_die, 4, 1, self.frames_die)
-
-        # self.frames_attack = []
-        # self.sheet_attack = load_image(f'{name}-attack.png')
-        # self.cut_sheet(self.sheet_attack, 6, 1, self.frames_attack)
 
         self.image = self.frames_stay[self.cur_frame]
         self.rect = self.image.get_rect()
