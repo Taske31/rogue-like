@@ -64,3 +64,4 @@ def generate_level(level):
 
 
 game_map = level_x, level_y = generate_level(load_level('map.txt'))
+

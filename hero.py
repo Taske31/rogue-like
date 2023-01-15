@@ -1,7 +1,6 @@
 import pygame
 import sys
 import os
-import main
 
 pygame.init()
 window = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
@@ -78,6 +77,9 @@ class Hero(pygame.sprite.Sprite):
         if self.condition == 'death':
             self.cur_frame = (self.cur_frame + 1) % len(self.frames_death)
             self.image = self.frames_death[self.cur_frame]
+            if self.cur_frame >= 7:
+                self.cur_frame = 7
+                self.frames_death = [self.frames_death[self.cur_frame]]
 
         else:
             if keys[pygame.K_d] or keys[pygame.K_a] or keys[pygame.K_w] or keys[pygame.K_s]:
@@ -125,7 +127,6 @@ class Hero(pygame.sprite.Sprite):
 
     def death(self):
         terminate()
-
 
 
 
