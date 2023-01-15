@@ -6,6 +6,7 @@ import hero
 import map
 import mobs
 import chest
+import door
 
 
 def load_image(name, colorkey=None):
@@ -35,6 +36,7 @@ if __name__ == '__main__':
     hero_group = hero.hero_group
     mobs_group = mobs.mobs_group
     chest_group = chest.chest_group
+    door_group = door.door_group
     clock = pygame.time.Clock()
     FPS = 24
 
@@ -110,7 +112,7 @@ if __name__ == '__main__':
     hero_health = 100
     boar = mobs.Mob('boar', 20, 30, (500, 200))
     boar2 = mobs.Mob('boar', 20, 30, (700, 800))
-    chest = chest.Chest((500, 500))
+    door = door.Door((500, 0))
     run = True
     DEATHTIMER = pygame.USEREVENT + 1
     BOARTIMER = pygame.USEREVENT
@@ -134,6 +136,7 @@ if __name__ == '__main__':
             if event.type == DEATHTIMER:
                 death_screen()
 
+        door.spawn_door()
         game_map = map.game_map
 
         map.tiles_group.draw(window)
@@ -150,6 +153,7 @@ if __name__ == '__main__':
         hero_group.draw(window)
         mobs_group.draw(window)
         chest_group.draw(window)
+        door_group.draw(window)
 
         health_bar(hero_health)
         pygame.display.flip()
