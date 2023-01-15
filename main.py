@@ -9,7 +9,7 @@ import chest
 import random
 import door
 
-mob_list ={
+mob_list = {
     'boar_brown': [20, 100],
     'boar_black': [30, 100],
     'boar_white': [15, 100],
@@ -17,13 +17,6 @@ mob_list ={
 
 }
 mob_list_keys = ['boar_brown', 'boar_black', 'boar_white', 'bee']
-
-
-def mobs_count():
-    global amount_of_mobs
-    amount_of_mobs -= 1
-    if amount_of_mobs <= 0:
-        door.spawn_door()
 
 
 def load_image(name, colorkey=None):
@@ -53,6 +46,7 @@ if __name__ == '__main__':
     hero_group = hero.hero_group
     mobs_group = mobs.mobs_group
     chest_group = chest.chest_group
+    door_group = door.door_group
     clock = pygame.time.Clock()
     FPS = 24
     amount_of_mobs = 3
@@ -62,9 +56,9 @@ if __name__ == '__main__':
         window.blit(fon, (0, 0))
         text_coord = 300
         death_screen_text = ["Экран смерти.", "",
-                      "НР вашего персонажа опустилось до 0.",
-                      "Старайтесь так не делать.",
-                      "*Нажмите на любую клавишу что бы выйти*"]
+                             "НР вашего персонажа опустилось до 0.",
+                             "Старайтесь так не делать.",
+                             "*Нажмите на любую клавишу что бы выйти*"]
         for line in death_screen_text:
             string_rendered = font.render(line, True, pygame.Color('white'))
             death_screen_rect = string_rendered.get_rect()
@@ -80,9 +74,10 @@ if __name__ == '__main__':
                     terminate()
                 elif event.type == pygame.KEYDOWN or \
                         event.type == pygame.MOUSEBUTTONDOWN:
-                    return  terminate()
+                    return terminate()
             pygame.display.flip()
             clock.tick(FPS)
+
 
     def intro():
         window.blit(fon, (0, 0))
@@ -115,6 +110,7 @@ if __name__ == '__main__':
         pygame.quit()
         sys.exit()
 
+
     def health_bar(health):
         text = font.render("HP", True, (255, 255, 255))
         window.blit(text, (width - 400, 50))
@@ -124,19 +120,28 @@ if __name__ == '__main__':
     def attack(receiver, attacker):
         receiver.get_damage(attacker.attack())
 
+
     def new_level():
+        global mob1, mob2, mob3
         hero_object.rect.x = 120
         hero_object.rect.y = 385
         mob1_name = random.choice(mob_list_keys)
         mob1 = mobs.Mob(mob1_name, mob_list[mob1_name][0], mob_list[mob1_name][1], (random.randint(200, width - 200),
-                                                                random.randint(200, height - 200)))
+                                                                                    random.randint(200, height - 200)))
         mob2_name = random.choice(mob_list_keys)
         mob2 = mobs.Mob(mob2_name, mob_list[mob2_name][0], mob_list[mob2_name][1], (random.randint(200, width - 200),
-                                                                random.randint(200, height - 200)))
+                                                                                    random.randint(200, height - 200)))
         mob3_name = random.choice(mob_list_keys)
         mob3 = mobs.Mob(mob3_name, mob_list[mob3_name][0], mob_list[mob3_name][1], (random.randint(200, width - 200),
-                                                                random.randint(200, height - 200)))
+                                                                                    random.randint(200, height - 200)))
         return mob1, mob2, mob3
+
+
+    def mobs_count(m1, m2, m3):
+        if m1 and m2 and m3:
+            door.spawn_door()
+            return True
+
 
     hero_object = hero.Hero(4, 1)
     hero_health = 100
@@ -147,6 +152,9 @@ if __name__ == '__main__':
     ENEMYTIMER1 = pygame.USEREVENT
     ENEMYTIMER2 = pygame.USEREVENT + 2
     ENEMYTIMER3 = pygame.USEREVENT + 3
+    mob1_attack = False
+    mob2_attack = False
+    mob3_attack = False
 
     intro()
     while run:
@@ -161,22 +169,28 @@ if __name__ == '__main__':
                 attack(mob3, hero_object)
                 if pygame.sprite.spritecollide(mob1, hero_group, False):
                     pygame.time.set_timer(ENEMYTIMER1, 2000)
+                    mob1_attack = True
                 else:
                     pygame.time.set_timer(ENEMYTIMER1, 0)
                 if pygame.sprite.spritecollide(mob2, hero_group, False):
                     pygame.time.set_timer(ENEMYTIMER2, 2000)
+                    mob2_attack = True
                 else:
                     pygame.time.set_timer(ENEMYTIMER2, 0)
-                if pygame.sprite.spritecollide(mob3, hero_group, False):
+                if pygame.sprite.spritecollide(mob3, hero_group, False) and not mob3_attack:
                     pygame.time.set_timer(ENEMYTIMER3, 2000)
+                    mob3_attack = True
                 else:
                     pygame.time.set_timer(ENEMYTIMER3, 0)
             if event.type == ENEMYTIMER1:
                 attack(hero_object, mob1)
+                mob1_attack = False
             if event.type == ENEMYTIMER2:
                 attack(hero_object, mob2)
+                mob2_attack = False
             if event.type == ENEMYTIMER3:
                 attack(hero_object, mob3)
+                mob3_attack = False
             if hero_health <= 0:
                 pygame.time.set_timer(DEATHTIMER, 500)
             if event.type == DEATHTIMER:
@@ -199,7 +213,10 @@ if __name__ == '__main__':
         hero_group.draw(window)
         mobs_group.draw(window)
         chest_group.draw(window)
-
+        if mobs_count(mob1.alive(), mob2.alive(), mob3.alive()):
+            door_group.draw(window)
+            if door.new_level():
+                new_level()
         health_bar(hero_health)
         pygame.display.flip()
         clock.tick(FPS)
