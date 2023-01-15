@@ -72,6 +72,13 @@ class Hero(pygame.sprite.Sprite):
         self.condition = ''
         self.count_to_death = 0
 
+    def swap_weapon(self, name):
+        if name == 'black':
+            self.damage = 30
+        if name == 'red':
+            self.damage = 20
+        if name == 'nothing':
+            pass
     def cut_sheet(self, sheet, columns, rows, frame):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
                                 sheet.get_height() // rows)
@@ -135,11 +142,3 @@ class Hero(pygame.sprite.Sprite):
 
     def death(self):
         terminate()
-
-
-
-
-
-
-
-

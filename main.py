@@ -138,7 +138,14 @@ if __name__ == '__main__':
 
 
     def mobs_count(m1, m2, m3):
+        import chest
+        import hero
         if m1 and m2 and m3:
+            chest = chest.Chest((500, 500))
+            if chest.open():
+                color = ['black', 'red', 'nothing']
+                win = random.choice(color)
+                hero_object.swap_weapon(win)
             door.spawn_door()
             return True
 
@@ -212,9 +219,9 @@ if __name__ == '__main__':
 
         hero_group.draw(window)
         mobs_group.draw(window)
-        chest_group.draw(window)
         if mobs_count(mob1.alive(), mob2.alive(), mob3.alive()):
             door_group.draw(window)
+            chest_group.draw(window)
             if door.new_level():
                 new_level()
         health_bar(hero_health)
