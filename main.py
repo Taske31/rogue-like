@@ -5,6 +5,7 @@ import settings
 import hero
 import map
 import mobs
+import chest
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('images', name)
@@ -32,6 +33,7 @@ if __name__ == '__main__':
     fon = pygame.transform.scale(load_image('floor.png'), (width, height))
     hero_group = hero.hero_group
     mobs_group = mobs.mobs_group
+    chest_group = chest.chest_group
     clock = pygame.time.Clock()
     FPS = 24
 
@@ -107,6 +109,7 @@ if __name__ == '__main__':
     hero_health = 100
     boar = mobs.Mob('boar', 20, 30, (500, 200))
     boar2 = mobs.Mob('boar', 20, 30, (700, 800))
+    chest = chest.Chest((500, 500))
     run = True
     BOARTIMER = pygame.USEREVENT + 1
     intro()
@@ -117,7 +120,6 @@ if __name__ == '__main__':
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 settings.open_settings()
             if event.type == pygame.MOUSEBUTTONDOWN:
-
                 attack(boar, hero_object)
                 attack(boar2, hero_object)
                 if pygame.sprite.spritecollide(boar, hero_group, False):
@@ -141,6 +143,7 @@ if __name__ == '__main__':
 
         hero_group.draw(window)
         mobs_group.draw(window)
+        chest_group.draw(window)
 
         health_bar(hero_health)
         pygame.display.flip()
