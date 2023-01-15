@@ -68,6 +68,24 @@ if __name__ == '__main__':
         pygame.quit()
         sys.exit()
 
+
+    def load_image(name, colorkey=None):
+        fullname = os.path.join('images', name)
+        # если файл не существует, то выходим
+        if not os.path.isfile(fullname):
+            print(f"Файл с изображением '{fullname}' не найден")
+            sys.exit()
+        image = pygame.image.load(fullname)
+        if colorkey is not None:
+            image = image.convert()
+            if colorkey == -1:
+                colorkey = image.get_at((0, 0))
+            image.set_colorkey(colorkey)
+        else:
+            image = image.convert_alpha()
+        return image
+
+
     def health_bar(health):
         text = font.render("HP", True, (255, 255, 255))
         window.blit(text, (width - 400, 50))
@@ -83,8 +101,8 @@ if __name__ == '__main__':
     boar = mobs.Mob('boar', 20, 30, (500, 200))
     boar2 = mobs.Mob('boar', 20, 30, (700, 800))
     run = True
-    DEATHTIMER = pygame.USEREVENT
     BOARTIMER = pygame.USEREVENT + 1
+    intro()
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -100,10 +118,6 @@ if __name__ == '__main__':
             if event.type == BOARTIMER:
                 attack(hero_object, boar)
                 attack(hero_object, boar2)
-            if hero_health <= 0:
-                pygame.time.set_timer(DEATHTIMER, 1000)
-            if event.type == DEATHTIMER:
-                terminate()
 
         game_map = map.game_map
 
