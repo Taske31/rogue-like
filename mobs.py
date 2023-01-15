@@ -13,7 +13,7 @@ mobs_group = pygame.sprite.Group()
 
 
 def load_image(name, colorkey=None):
-    fullname = os.path.join('images', name)
+    fullname = os.path.join('images/mobs', name)
     # если файл не существует, то выходим
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
@@ -33,8 +33,8 @@ class Mob(pygame.sprite.Sprite):
     def __init__(self, name, damage, health, pos):
         super().__init__(mobs_group)
         self.name = name
-        self.health = health
-        self.damage = damage
+        self.health = int(health)
+        self.damage = int(damage)
         self.condition = 'calm'
 
         self.cur_frame = 0
@@ -44,7 +44,10 @@ class Mob(pygame.sprite.Sprite):
 
         self.frames_run = []
         self.sheet_run = load_image(f'{name}-run.png')
-        self.cut_sheet(self.sheet_run, 6, 1, self.frames_run)
+        if self.name == 'bee':
+            self.cut_sheet(self.sheet_run, 4, 1, self.frames_run)
+        else:
+            self.cut_sheet(self.sheet_run, 6, 1, self.frames_run)
 
         self.frames_die = []
         self.sheet_die = load_image(f'{name}-die.png')
@@ -78,8 +81,8 @@ class Mob(pygame.sprite.Sprite):
             self.cur_frame = (self.cur_frame + 1) % len(self.frames_die)
             self.image = self.frames_die[self.cur_frame]
             self.count_to_death += 1
-            if self.count_to_death == 8:
-                self.kill()
+            if self.count_to_death >= 7:
+                self.death()
         if self.condition == 'attack':
             self.cur_frame = (self.cur_frame + 1) % len(self.frames_stay)
             self.image = self.frames_stay[self.cur_frame]
@@ -90,10 +93,17 @@ class Mob(pygame.sprite.Sprite):
             self.health -= damage
             self.condition = 'angry'
         if self.health <= 0:
-            self.death()
+            self.condition = 'death'
 
     def death(self):
-        self.condition = 'death'
+        self.damage = 0
+        self.kill()
+
+    def alive(self):
+        if self.health > 0:
+            return False
+        else:
+            return True
 
     def chase(self, hero_pos):
         if not pygame.sprite.spritecollideany(self, hero.hero_group):
