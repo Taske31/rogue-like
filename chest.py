@@ -5,7 +5,6 @@ import hero
 
 chest_group = pygame.sprite.Group()
 
-
 def load_image(name, colorkey=None):
     fullname = os.path.join('images', name)
     # если файл не существует, то выходим
@@ -47,5 +46,6 @@ class Chest(pygame.sprite.Sprite):
     def open(self):
         if pygame.sprite.spritecollideany(self, hero.hero_group):
             self.image = self.frames[1]
+            return True
 
 
