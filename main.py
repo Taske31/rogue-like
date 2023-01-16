@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+
 import settings
 import hero
 import map
@@ -9,6 +10,7 @@ import chest
 import random
 import door
 
+# название всех мобов
 mob_list = {
     'boar_brown': [20, 100],
     'boar_black': [30, 100],
@@ -17,8 +19,9 @@ mob_list = {
 
 }
 mob_list_keys = ['boar_brown', 'boar_black', 'boar_white', 'bee']
+amount_of_mobs = 0
 
-
+# загрузка картинок
 def load_image(name, colorkey=None):
     fullname = os.path.join('images', name)
     # если файл не существует, то выходим
@@ -35,6 +38,16 @@ def load_image(name, colorkey=None):
         image = image.convert_alpha()
     return image
 
+# возваращаем результаты
+def return_score():
+    return str(amount_of_mobs)
+
+# прибавляем очки
+def plus_score():
+    global amount_of_mobs
+    amount_of_mobs += 1
+    print(amount_of_mobs)
+
 
 if __name__ == '__main__':
     pygame.init()
@@ -49,7 +62,6 @@ if __name__ == '__main__':
     door_group = door.door_group
     clock = pygame.time.Clock()
     FPS = 24
-    amount_of_mobs = 3
 
 
     def death_screen():
@@ -58,6 +70,7 @@ if __name__ == '__main__':
         death_screen_text = ["Экран смерти.", "",
                              "НР вашего персонажа опустилось до 0.",
                              "Старайтесь так не делать.",
+                             f"Вы набрали {return_score()} очка(о)",
                              "*Нажмите на любую клавишу что бы выйти*"]
         for line in death_screen_text:
             string_rendered = font.render(line, True, pygame.Color('white'))
@@ -94,7 +107,7 @@ if __name__ == '__main__':
             intro_rect.x = 500
             text_coord += intro_rect.height
             window.blit(string_rendered, intro_rect)
-
+        # цикл пока не нажата кнопка
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -106,21 +119,25 @@ if __name__ == '__main__':
             clock.tick(FPS)
 
 
+    # закрытие программмы
     def terminate():
         pygame.quit()
         sys.exit()
 
 
+    # полоска здоровья
     def health_bar(health):
         text = font.render("HP", True, (255, 255, 255))
         window.blit(text, (width - 400, 50))
         pygame.draw.rect(window, (255, 0, 0), (width - 340, 50, health * 2, 30))
 
 
+    # атака объектов
     def attack(receiver, attacker):
         receiver.get_damage(attacker.attack())
 
 
+    # новый уровень
     def new_level():
         global mob1, mob2, mob3
         hero_object.rect.x = 120
@@ -137,6 +154,7 @@ if __name__ == '__main__':
         return mob1, mob2, mob3
 
 
+    # спавним дверь, если все мобы умерли
     def mobs_count(m1, m2, m3):
         if m1 and m2 and m3:
             door.spawn_door()
@@ -148,8 +166,9 @@ if __name__ == '__main__':
     door = door.Door((width // 2, 0))
     mob1, mob2, mob3 = new_level()
     run = True
-    DEATHTIMER = pygame.USEREVENT + 1
-    ENEMYTIMER1 = pygame.USEREVENT
+    # таймеры
+    DEATHTIMER = pygame.USEREVENT
+    ENEMYTIMER1 = pygame.USEREVENT + 1
     ENEMYTIMER2 = pygame.USEREVENT + 2
     ENEMYTIMER3 = pygame.USEREVENT + 3
     mob1_attack = False
@@ -177,7 +196,7 @@ if __name__ == '__main__':
                     mob2_attack = True
                 else:
                     pygame.time.set_timer(ENEMYTIMER2, 0)
-                if pygame.sprite.spritecollide(mob3, hero_group, False) and not mob3_attack:
+                if pygame.sprite.spritecollide(mob3, hero_group, False):
                     pygame.time.set_timer(ENEMYTIMER3, 2000)
                     mob3_attack = True
                 else:
@@ -199,20 +218,21 @@ if __name__ == '__main__':
         game_map = map.game_map
 
         map.tiles_group.draw(window)
-
+        # доп функции
         hero_health = hero_object.health
         keys = pygame.key.get_pressed()
         mouse = pygame.mouse.get_pressed()
         hero_object.move(keys)
         hero_object.animation(keys, mouse)
-
+        # анимация спрайтов
         mob1.animation(hero_object.rect)
         mob2.animation(hero_object.rect)
         mob3.animation(hero_object.rect)
-
+        # отрисовка объектов
         hero_group.draw(window)
         mobs_group.draw(window)
         chest_group.draw(window)
+        # условие появления двери
         if mobs_count(mob1.alive(), mob2.alive(), mob3.alive()):
             door_group.draw(window)
             if door.new_level():

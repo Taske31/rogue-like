@@ -59,6 +59,7 @@ class Mob(pygame.sprite.Sprite):
         self.rect.y = pos[1]
         self.speed = 5
         self.count_to_death = 0
+        self.call_of_death = False
 
     def cut_sheet(self, sheet, columns, rows, frame):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
@@ -97,6 +98,9 @@ class Mob(pygame.sprite.Sprite):
 
     def death(self):
         self.damage = 0
+        if not self.call_of_death:
+            main.plus_score()
+            self.call_of_death = True
         self.kill()
 
     def alive(self):
