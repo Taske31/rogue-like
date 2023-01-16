@@ -21,6 +21,7 @@ mob_list = {
 mob_list_keys = ['boar_brown', 'boar_black', 'boar_white', 'bee']
 amount_of_mobs = 0
 
+
 # загрузка картинок
 def load_image(name, colorkey=None):
     fullname = os.path.join('images', name)
@@ -38,9 +39,11 @@ def load_image(name, colorkey=None):
         image = image.convert_alpha()
     return image
 
+
 # возваращаем результаты
 def return_score():
     return str(amount_of_mobs)
+
 
 # прибавляем очки
 def plus_score():
@@ -118,12 +121,10 @@ if __name__ == '__main__':
             pygame.display.flip()
             clock.tick(FPS)
 
-
     # закрытие программмы
     def terminate():
         pygame.quit()
         sys.exit()
-
 
     # полоска здоровья
     def health_bar(health):
@@ -131,11 +132,9 @@ if __name__ == '__main__':
         window.blit(text, (width - 400, 50))
         pygame.draw.rect(window, (255, 0, 0), (width - 340, 50, health * 2, 30))
 
-
     # атака объектов
     def attack(receiver, attacker):
         receiver.get_damage(attacker.attack())
-
 
     # новый уровень
     def new_level():
@@ -153,10 +152,16 @@ if __name__ == '__main__':
                                                                                     random.randint(200, height - 200)))
         return mob1, mob2, mob3
 
-
     # спавним дверь, если все мобы умерли
     def mobs_count(m1, m2, m3):
+        import chest
+        import hero
         if m1 and m2 and m3:
+            chest = chest.Chest((500, 500))
+            if chest.open():
+                color = ['black', 'red', 'nothing']
+                win = random.choice(color)
+                hero_object.swap_weapon(win)
             door.spawn_door()
             return True
 
@@ -235,6 +240,7 @@ if __name__ == '__main__':
         # условие появления двери
         if mobs_count(mob1.alive(), mob2.alive(), mob3.alive()):
             door_group.draw(window)
+            chest_group.draw(window)
             if door.new_level():
                 new_level()
         health_bar(hero_health)

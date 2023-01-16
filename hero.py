@@ -79,6 +79,7 @@ class Hero(pygame.sprite.Sprite):
             self.damage = 20
         if name == 'nothing':
             pass
+
     def cut_sheet(self, sheet, columns, rows, frame):
         self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
                                 sheet.get_height() // rows)
@@ -101,8 +102,15 @@ class Hero(pygame.sprite.Sprite):
                 self.cur_frame = (self.cur_frame + 1) % len(self.frames_run)
                 self.image = self.frames_run[self.cur_frame]
             elif button[0]:
-                self.cur_frame = (self.cur_frame + 1) % len(self.frames_attack)
-                self.image = self.frames_attack[self.cur_frame]
+                if self.damage == 30:
+                    self.cur_frame = (self.cur_frame + 1) % len(self.frames_attack_black)
+                    self.image = self.frames_attack_black[self.cur_frame]
+                elif self.damage == 20:
+                    self.cur_frame = (self.cur_frame + 1) % len(self.frames_attack_red)
+                    self.image = self.frames_attack_red[self.cur_frame]
+                else:
+                    self.cur_frame = (self.cur_frame + 1) % len(self.frames_attack)
+                    self.image = self.frames_attack[self.cur_frame]
             else:
                 self.cur_frame = (self.cur_frame + 1) % len(self.frames_stay)
                 self.image = self.frames_stay[self.cur_frame]
